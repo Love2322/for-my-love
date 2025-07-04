@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Love</title>
+
+    <!-- ဒီနေရာမှာ CSS Design တွေထည့်ပါမယ် -->
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fce4ec; /* Light pink background */
+            overflow: hidden; /* To hide scrollbars */
+            color: #444;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #password-container input {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ff80ab;
+            border-radius: 5px;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        #password-container button, #exit-button {
+            padding: 10px 20px;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #heart-prompt .heart-icon {
+            font-size: 100px;
+            cursor: pointer;
+            animation: beat 1.5s infinite;
+        }
+
+        #heart-prompt p {
+            font-size: 20px;
+            color: #d81b60;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .rainbow-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            animation: rainbow 5s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { color: red; } 15% { color: orange; } 30% { color: yellow; }
+            45% { color: green; } 60% { color: blue; } 75% { color: indigo; }
+            90% { color: violet; } 100% { color: red; }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: red;
+            opacity: 0;
+            animation: flyUp 5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        #exit-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none; /* Initially hidden */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-content h2 { margin-bottom: 20px; }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #love-yes { background-color: #4CAF50; color: white; }
+        #love-no { background-color: #f44336; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Password Page -->
+    <div id="password-container" class="container">
+        <h1>လျှို့ဝှက်ကုဒ်ထည့်ပါ</h1>
+        <input type="password" id="password-input" placeholder="Enter password">
+        <button id="password-button">ဝင်မည်</button>
+    </div>
+
+    <!-- Main Content (Hidden Initially) -->
+    <div id="main-content" class="container" style="display: none;">
+        
+        <!-- Heart Prompt -->
+        <div id="heart-prompt">
+            <div class="heart-icon">❤️</div>
+            <p>အသည်းပုံလေးကိုနှိပ်ပါ</p>
+        </div>
+        
+        <!-- Love Message (Hidden Initially) -->
+        <div id="love-message-container" style="display: none;">
+            <!-- ဓာတ်ပုံထည့်ရန် နေရာ -->
+            <img src="my-photo.jpg" alt="Our Photo" style="max-width: 200px; border-radius: 15px; margin-bottom: 20px;">
+            
+            <h1 class="rainbow-text">အရမ်းချစ်ရပါသောမိန်းမ</h1>
+            <button id="exit-button">ထွက်မည်</button>
+        </div>
+
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div id="exit-modal">
+        <div class="modal-content">
+            <h2>ချစ်သေးလား?</h2>
+            <button id="love-yes">ချစ်တယ်</button>
+            <button id="love-no">မချစ်ဘူး</button>
+        </div>
+    </div>
+    
+    <!-- Background Music -->
+    <audio id="background-music" loop>
+        <!-- သီချင်းထည့်ရန် နေရာ -->
+        <source src="love-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ဒီနေရာမှာ Website ရဲ့ လှုပ်ရှားမှု Code တွေထည့်ပါမယ် -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordContainer = document.getElementById('password-container');
+            const passwordInput = document.getElementById('password-input');
+            const passwordButton = document.getElementById('password-button');
+            const mainContent = document.getElementById('main-content');
+            const heartPrompt = document.getElementById('heart-prompt');
+            const loveMessageContainer = document.getElementById('love-message-container');
+            const backgroundMusic = document.getElementById('background-music');
+            const exitButton = document.getElementById('exit-button');
+            const exitModal = document.getElementById('exit-modal');
+            const loveYesButton = document.getElementById('love-yes');
+            const loveNoButton = document.getElementById('love-no');
+            
+            const correctPassword = '2006313';
+
+            passwordButton.addEventListener('click', () => {
+                if (passwordInput.value === correctPassword) {
+                    passwordContainer.style.display = 'none';
+                    mainContent.style.display = 'flex';
+                } else {
+                    alert('စကားဝှက်မှားနေပါတယ်!');
+                }
+            });
+
+            heartPrompt.addEventListener('click', () => {
+                heartPrompt.style.display = 'none';
+                loveMessageContainer.style.display = 'block';
+                backgroundMusic.play().catch(e => console.log("Music play failed:", e));
+                setInterval(createHeart, 300);
+            });
+
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 5000);
+            }
+            
+            exitButton.addEventListener('click', () => {
+                exitModal.style.display = 'flex';
+            });
+            
+            loveYesButton.addEventListener('click', () => {
+                alert('Bye Bye ချစ်ဆုံး <3');
+                window.close();
+            });
+            
+            loveNoButton.addEventListener('click', () => {
+                alert('မချစ်ရင် ထွက်လို့မရပါဘူးနော် :P');
+                exitModal.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
